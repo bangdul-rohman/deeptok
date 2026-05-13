@@ -1,4 +1,5 @@
 ---
-tasks:
-  - export DEPLOYPATH=/home/enah7515/public_html/api.enasverse.com
-  - /bin/cp -R * $DEPLOYPATH/
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/enah7515/public_html/api.enasverse.com
+    - find . -maxdepth 1 -name '*.php' -exec /bin/cp {} $DEPLOYPATH/ ';'
