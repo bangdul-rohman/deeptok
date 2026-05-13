@@ -1,5 +1,4 @@
 ﻿<?php
-
 declare(strict_types=1);
 
 set_time_limit(600);
@@ -9,7 +8,7 @@ ini_set('memory_limit', '128M');
 require_once __DIR__ . '/helper.php';
 require_once __DIR__ . '/db.php';
 
-// â”€â”€ Tentukan shop_id â”€â”€
+// Ã¢â€â‚¬Ã¢â€â‚¬ Tentukan shop_id Ã¢â€â‚¬Ã¢â€â‚¬
 // Mode web: dari session (via auth)
 // Mode cron: dari parameter ?shop_id=X
 $isCron = defined('CRON_MODE') && CRON_MODE;
@@ -150,7 +149,7 @@ do {
             $totalAmount = array_sum(array_column($order['line_items'], 'sale_price'));
         }
 
-        // â”€â”€ Simpan order dengan shop_id â”€â”€
+        // Ã¢â€â‚¬Ã¢â€â‚¬ Simpan order dengan shop_id Ã¢â€â‚¬Ã¢â€â‚¬
         $stmt = $pdo->prepare("
             INSERT INTO orders (
                 shop_id, order_id, status, create_time, update_time,
@@ -185,7 +184,7 @@ do {
             ':raw_data'         => json_encode($order, JSON_UNESCAPED_UNICODE),
         ]);
 
-        // â”€â”€ Simpan order items dengan shop_id â”€â”€
+        // Ã¢â€â‚¬Ã¢â€â‚¬ Simpan order items dengan shop_id Ã¢â€â‚¬Ã¢â€â‚¬
         $pdo->prepare("DELETE FROM order_items WHERE order_id = ? AND shop_id = ?")
             ->execute([$orderId, $shopId]);
 
@@ -229,5 +228,6 @@ $pdo->prepare("INSERT INTO sync_logs (shop_id, type, status, message, records) V
 echo "\n============================\n";
 echo "Selesai! Total tersimpan: {$totalSynced}\n";
 echo "============================\n";
+
 
 
