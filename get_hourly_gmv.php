@@ -4,8 +4,8 @@ ini_set('display_errors', '0');
 error_reporting(E_ALL);
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/db.php';
-header('Content-Type: application/json');
 date_default_timezone_set('Asia/Jakarta');
+header('Content-Type: application/json');
 try {
     $pdo    = getDB();
     $shopId = getShopId();
@@ -22,18 +22,11 @@ function getHourlyData(PDO $pdo, string $date, int $shopId, int $maxHour): array
     $tsStart = strtotime($date . ' 00:00:00');
     $tsEnd   = strtotime($date . ' ' . str_pad((string)$maxHour, 2, '0', STR_PAD_LEFT) . ':59:59');
     $stmt = $pdo->prepare("SELECT HOUR(FROM_UNIXTIME(create_time)) AS hour, COALESCE(SUM(total_amount), 0) AS gmv, COUNT(*) AS orders FROM orders WHERE shop_id = :sid AND create_time BETWEEN :s AND :e AND total_amount IS NOT NULL AND status NOT IN ('CANCELLED','UNPAID') GROUP BY hour ORDER BY hour ASC");
-    $stmt->execute([':sid' => $shopId, ':s' => $tsStart, ':e' => $tsEnd]);
+    $stmt->execute([':'.'sid' => $shopId, ':'.'s' => $tsStart, ':'.'e' => $tsEnd]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $result = [];
-    for ($i = 0; $i <= $maxHour; $i++) {
-        $result[$i] = ['hour' => $i, 'gmv' => 0.0, 'orders' => 0];
-    }
-    foreach ($rows as $r) {
-        $h = (int)$r['hour'];
-        if ($h >= 0 && $h <= $maxHour) {
-            $result[$h] = ['hour' => $h, 'gmv' => (float)$r['gmv'], 'orders' => (int)$r['orders']];
-        }
-    }
+    for ($i = 0; $i <= $maxHour; $i++) $result[$i] = ['hour' => $i, 'gmv' => 0.0, 'orders' => 0];
+    foreach ($rows as $r) { $h = (int)$r['hour']; if ($h >= 0 && $h <= $maxHour) $result[$h] = ['hour' => $h, 'gmv' => (float)$r['gmv'], 'orders' => (int)$r['orders']]; }
     return array_values($result);
 }
 try {
