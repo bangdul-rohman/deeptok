@@ -193,7 +193,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-
 .field-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;display:block;}
 .field-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:11px 14px;transition:border-color 0.2s;}
 .field-input:focus{outline:none;border-color:var(--accent);}
-.btn-login{width:100%;padding:13px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:white;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;transition:opacity 0.2s;}
+.btn-login{width:100%;padding:13px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:white;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;transition:opacity 0.2s;position:relative;z-index:10;}
 .btn-login:hover{opacity:0.88;}
 .error-msg{background:rgba(255,106,106,0.1);border:1px solid rgba(255,106,106,0.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--danger);margin-bottom:18px;}
 .warn-msg{background:rgba(255,184,106,0.1);border:1px solid rgba(255,184,106,0.3);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--warning);margin-bottom:18px;}
