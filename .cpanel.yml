@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/enah7515/public_html/api.enasverse.com
+    - /bin/cp -R $CPANEL_BASE_INSTALL_DIR/* $DEPLOYPATH/
