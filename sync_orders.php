@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 declare(strict_types=1);
 
 set_time_limit(600);
@@ -8,7 +8,7 @@ ini_set('memory_limit', '128M');
 require_once __DIR__ . '/helper.php';
 require_once __DIR__ . '/db.php';
 
-// Ã¢â€â‚¬Ã¢â€â‚¬ Tentukan shop_id Ã¢â€â‚¬Ã¢â€â‚¬
+/// Tentukan shop_id
 // Mode web: dari session (via auth)
 // Mode cron: dari parameter ?shop_id=X
 $isCron = defined('CRON_MODE') && CRON_MODE;
