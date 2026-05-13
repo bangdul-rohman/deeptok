@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 declare(strict_types=1);
 
 ini_set('display_errors', '0');
@@ -8,6 +8,7 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/db.php';
 
 header('Content-Type: application/json');
+date_default_timezone_set('Asia/Jakarta');
 
 try {
     $pdo    = getDB();
@@ -17,7 +18,7 @@ try {
 }
 
 // create_time di DB disimpan sebagai WIB unix timestamp
-// FROM_UNIXTIME(create_time) langsung = jam WIB — tidak perlu CONVERT_TZ / offset
+// FROM_UNIXTIME(create_time) langsung = jam WIB â€” tidak perlu CONVERT_TZ / offset
 
 // Jam WIB sekarang = jam server (server timezone = WIB / create_time reference WIB)
 $nowHour  = (int)date('G');        // jam saat ini (0-23)
@@ -63,7 +64,7 @@ function getHourlyData(PDO $pdo, string $date, int $shopId, int $maxHour): array
 }
 
 try {
-    $today_data  = getHourlyData($pdo, $date,     $shopId, $currentHour); // hijau: 00–jam skrg
+    $today_data  = getHourlyData($pdo, $date,     $shopId, $currentHour); // hijau: 00â€“jam skrg
     $prevFull    = getHourlyData($pdo, $prevDate, $shopId, 23);            // merah: full day
     $prevApple   = getHourlyData($pdo, $prevDate, $shopId, $currentHour); // apple-to-apple
 
@@ -85,10 +86,11 @@ try {
             'prev_gmv'     => $prevGmvAp,
             'diff_gmv'     => $diffGmv,
             'diff_pct'     => $diffPct,
-            'compare_note' => '00:00–' . str_pad((string)$currentHour, 2, '0', STR_PAD_LEFT) . ':59 WIB vs kemarin jam yg sama',
+            'compare_note' => '00:00â€“' . str_pad((string)$currentHour, 2, '0', STR_PAD_LEFT) . ':59 WIB vs kemarin jam yg sama',
         ],
     ], JSON_UNESCAPED_UNICODE);
 
 } catch (Throwable $e) {
     echo json_encode(['error' => $e->getMessage()]);
 }
+
