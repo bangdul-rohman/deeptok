@@ -301,7 +301,7 @@ tr:hover td{background:rgba(124,106,255,0.04);}
       <input type="hidden" name="shop_id" value="<?= $shopId ?>">
       <div class="field-wrap">
         <label class="field-label">Username</label>
-        <input class="field-input" type="text" name="username" placeholder="Username margin" required>
+        <input class="field-input" type="text" name="username" placeholder="Username margin" required autocomplete="off">
       </div>
       <div class="field-wrap">
         <label class="field-label">Password</label>
