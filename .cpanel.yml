@@ -1,4 +1,4 @@
-﻿---
+---
 deployment:
   tasks:
     - export DEPLOYPATH=/home/enah7515/public_html/api.enasverse.com
