@@ -1,41 +1,26 @@
 <?php
-<?php
 declare(strict_types=1);
-
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
-
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/db.php';
-
 header('Content-Type: application/json');
 date_default_timezone_set('Asia/Jakarta');
-
 try {
     $pdo    = getDB();
     $shopId = getShopId();
 } catch (Throwable $e) {
     echo json_encode(['error' => 'DB: ' . $e->getMessage()]); exit;
 }
-
-// create_time di DB disimpan sebagai WIB unix timestamp
-// FROM_UNIXTIME(create_time) langsung = jam WIB â€” tidak perlu CONVERT_TZ / offset
-
-// Jam WIB sekarang = jam server (server timezone = WIB / create_time reference WIB)
-$nowHour  = (int)date('G');        // jam saat ini (0-23)
-$today    = date('Y-m-d');         // tanggal WIB hari ini
-
+$nowHour  = (int)date('G');
+$today    = date('Y-m-d');
 $date     = isset($_GET['date']) ? preg_replace('/[^0-9\-]/', '', $_GET['date']) : $today;
 $isToday  = ($date === $today);
 $currentHour = $isToday ? $nowHour : 23;
 $prevDate    = date('Y-m-d', strtotime($date . ' -1 day'));
-
-function getHourlyData(PDO $pdo, string $date, int $shopId, int $maxHour): array
-{
-    // Range langsung pakai WIB (create_time sudah WIB)
+function getHourlyData(PDO $pdo, string $date, int $shopId, int $maxHour): array {
     $tsStart = strtotime($date . ' 00:00:00');
     $tsEnd   = strtotime($date . ' ' . str_pad((string)$maxHour, 2, '0', STR_PAD_LEFT) . ':59:59');
-
     $stmt = $pdo->prepare(
         "SELECT HOUR(FROM_UNIXTIME(create_time)) AS hour,
                 COALESCE(SUM(total_amount), 0)   AS gmv,
@@ -50,7 +35,6 @@ function getHourlyData(PDO $pdo, string $date, int $shopId, int $maxHour): array
     );
     $stmt->execute([':sid' => $shopId, ':s' => $tsStart, ':e' => $tsEnd]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
     $result = [];
     for ($i = 0; $i <= $maxHour; $i++) {
         $result[$i] = ['hour' => $i, 'gmv' => 0.0, 'orders' => 0];
@@ -63,17 +47,14 @@ function getHourlyData(PDO $pdo, string $date, int $shopId, int $maxHour): array
     }
     return array_values($result);
 }
-
 try {
-    $today_data  = getHourlyData($pdo, $date,     $shopId, $currentHour); // hijau: 00â€“jam skrg
-    $prevFull    = getHourlyData($pdo, $prevDate, $shopId, 23);            // merah: full day
-    $prevApple   = getHourlyData($pdo, $prevDate, $shopId, $currentHour); // apple-to-apple
-
+    $today_data  = getHourlyData($pdo, $date,     $shopId, $currentHour);
+    $prevFull    = getHourlyData($pdo, $prevDate, $shopId, 23);
+    $prevApple   = getHourlyData($pdo, $prevDate, $shopId, $currentHour);
     $todayGmv  = (float)array_sum(array_column($today_data, 'gmv'));
     $prevGmvAp = (float)array_sum(array_column($prevApple,  'gmv'));
     $diffGmv   = $todayGmv - $prevGmvAp;
     $diffPct   = $prevGmvAp > 0 ? round($diffGmv / $prevGmvAp * 100, 1) : 0;
-
     echo json_encode([
         'date'         => $date,
         'prev_date'    => $prevDate,
@@ -87,11 +68,9 @@ try {
             'prev_gmv'     => $prevGmvAp,
             'diff_gmv'     => $diffGmv,
             'diff_pct'     => $diffPct,
-            'compare_note' => '00:00â€“' . str_pad((string)$currentHour, 2, '0', STR_PAD_LEFT) . ':59 WIB vs kemarin jam yg sama',
+            'compare_note' => '00:00-' . str_pad((string)$currentHour, 2, '0', STR_PAD_LEFT) . ':59 WIB vs kemarin jam yg sama',
         ],
     ], JSON_UNESCAPED_UNICODE);
-
 } catch (Throwable $e) {
     echo json_encode(['error' => $e->getMessage()]);
 }
-
