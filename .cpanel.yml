@@ -1,5 +1,4 @@
 ---
-deployment:
-  tasks:
-    - export DEPLOYPATH=/home/enah7515/public_html/api.enasverse.com
-    - /bin/cp -R * $DEPLOYPATH/
+tasks:
+  - export DEPLOYPATH=/home/enah7515/public_html/api.enasverse.com
+  - /bin/cp -R * $DEPLOYPATH/
