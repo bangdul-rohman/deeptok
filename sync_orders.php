@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 declare(strict_types=1);
 
@@ -9,7 +9,7 @@ ini_set('memory_limit', '128M');
 require_once __DIR__ . '/helper.php';
 require_once __DIR__ . '/db.php';
 
-// ── Tentukan shop_id ──
+// â”€â”€ Tentukan shop_id â”€â”€
 // Mode web: dari session (via auth)
 // Mode cron: dari parameter ?shop_id=X
 $isCron = defined('CRON_MODE') && CRON_MODE;
@@ -47,7 +47,7 @@ $batches = [
 
 $totalSynced = 0;
 echo "Sync orders: {$targetDate} | shop_id: {$shopId}\n";
-ob_implicit_flush(true);
+ob_implicit_flush(1);
 if (function_exists('ob_end_flush')) @ob_end_flush();
 
 function orderRequest(
@@ -150,7 +150,7 @@ do {
             $totalAmount = array_sum(array_column($order['line_items'], 'sale_price'));
         }
 
-        // ── Simpan order dengan shop_id ──
+        // â”€â”€ Simpan order dengan shop_id â”€â”€
         $stmt = $pdo->prepare("
             INSERT INTO orders (
                 shop_id, order_id, status, create_time, update_time,
@@ -185,7 +185,7 @@ do {
             ':raw_data'         => json_encode($order, JSON_UNESCAPED_UNICODE),
         ]);
 
-        // ── Simpan order items dengan shop_id ──
+        // â”€â”€ Simpan order items dengan shop_id â”€â”€
         $pdo->prepare("DELETE FROM order_items WHERE order_id = ? AND shop_id = ?")
             ->execute([$orderId, $shopId]);
 
@@ -229,3 +229,4 @@ $pdo->prepare("INSERT INTO sync_logs (shop_id, type, status, message, records) V
 echo "\n============================\n";
 echo "Selesai! Total tersimpan: {$totalSynced}\n";
 echo "============================\n";
+
